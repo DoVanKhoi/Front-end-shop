@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     search: '',
     filterType: '',
+    countInStockOfItems: [],
 }
 
 export const productSlide = createSlice({
@@ -15,9 +16,12 @@ export const productSlide = createSlice({
         filterProduct: (state, action) => {
             state.filterType = action.payload
         },
+        addCountInStockOfItems: (state, action) => {
+            state.countInStockOfItems = action.payload
+        }
     },
 })
 
-export const { searchProduct, filterProduct } = productSlide.actions
+export const { searchProduct, filterProduct, addCountInStockOfItems } = productSlide.actions
 
 export default productSlide.reducer

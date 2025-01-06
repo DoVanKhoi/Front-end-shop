@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const OrderPage = () => {
     const user = useSelector((state) => state.user);
     const order = useSelector((state) => state.order);
+    const products = useSelector((state) => state.product);
     const [listCheck, setListCheck] = useState([]);
     const [listPrice, setListPrice] = useState([]);
     const [temporaryTotalPrice, setTemporaryTotalPrice] = useState(0);
@@ -20,7 +21,11 @@ const OrderPage = () => {
     const naigate = useNavigate();
 
     const handleIncrease = (e) => {
-        dispatch(increaseAmount(e.target.id));
+        if (products?.countInStockOfItems?.find((item) => item?._id === e.target.id)?.countInStock > order?.orderItems?.find((item) => item?.product === e.target.id)?.amount) {
+            dispatch(increaseAmount(e.target.id));
+        } else {
+            toast.warn("Số lượng sản phẩm không đủ");
+        }
     }
 
     const handleDecrease = (e) => {

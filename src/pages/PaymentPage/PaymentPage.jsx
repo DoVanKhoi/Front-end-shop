@@ -89,7 +89,8 @@ const OrderPage = () => {
                 orderItems: order?.orderItems,
                 access_token: user?.access_token,
                 isPaid: false,
-                deliveryMethod: delivery
+                deliveryMethod: delivery,
+                email: user?.email
             }, {
                 onSuccess: () => {
                     toast.success("Đặt hàng thành công");
@@ -111,36 +112,39 @@ const OrderPage = () => {
     }
 
     const onSuccessPayment = (details, data) => {
-        mutation.mutate({
-            userId: user?.id,
-            shippingAddress: order?.shippingAddress,
-            paymentMethod: `${payment === "cash" ? "Thanh toán tiền mặt khi nhận hàng" : "Thanh toán online bằng thẻ tín dụng"}`,
-            itemsPrice: temporaryTotalPrice,
-            shippingPrice: deliveryFee,
-            totalPrice: totalPrice,
-            user: user?.id,
-            orderItems: order?.orderItems,
-            access_token: user?.access_token,
-            isPaid: true,
-            paidAt: details.update_time,
-            deliveryMethod: delivery
-        }, {
-            onSuccess: () => {
-                toast.success("Đặt hàng thành công");
-            }
-        });
-        navigate("/order-success", {
-            state: {
-                orders: order?.orderItems,
+        if (user?.access_token && order?.shippingAddress && order?.orderItems?.length > 0) {
+            mutation.mutate({
+                userId: user?.id,
+                shippingAddress: order?.shippingAddress,
+                paymentMethod: `${payment === "cash" ? "Thanh toán tiền mặt khi nhận hàng" : "Thanh toán online bằng thẻ tín dụng"}`,
+                itemsPrice: temporaryTotalPrice,
+                shippingPrice: deliveryFee,
                 totalPrice: totalPrice,
-                deliveryFee: deliveryFee,
-                discount: discount,
-                temporaryTotalPrice: temporaryTotalPrice,
-                delivery: delivery,
-                payment: payment
-            }
-        });
-        dispatch(clearAllOrderProduct());
+                user: user?.id,
+                orderItems: order?.orderItems,
+                access_token: user?.access_token,
+                isPaid: true,
+                paidAt: details.update_time,
+                deliveryMethod: delivery,
+                email: user?.email
+            }, {
+                onSuccess: () => {
+                    toast.success("Đặt hàng thành công");
+                }
+            });
+            navigate("/order-success", {
+                state: {
+                    orders: order?.orderItems,
+                    totalPrice: totalPrice,
+                    deliveryFee: deliveryFee,
+                    discount: discount,
+                    temporaryTotalPrice: temporaryTotalPrice,
+                    delivery: delivery,
+                    payment: payment
+                }
+            });
+            dispatch(clearAllOrderProduct());
+        }
     }
 
     useEffect(() => {

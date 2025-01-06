@@ -4,11 +4,14 @@ import * as ProductService from "../../services/ProductService";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addOrderProduct } from "../../redux/slides/orderSlide";
-import { formatPrice } from "../../utils";
+import { formatPrice, initFacebookSdk } from "../../utils";
 import { ToastContainer, toast } from 'react-toastify';
+import LikeButtonComponent from "../LikeButtonComponent/LikeButtonComponent";
+import CommentComponent from "../CommentComponent/CommentComponent";
 
 const ProductDetailsComponent = (props) => {
     const user = useSelector((state) => state.user);
+    const order = useSelector((state) => state.order);
     const { idProduct } = props;
     const [product, setProduct] = useState({});
     const [count, setCount] = useState(1);
@@ -38,6 +41,19 @@ const ProductDetailsComponent = (props) => {
     const handleAddOrderProduct = () => {
         if (!user?.id) {
             navigate('/sign-in', { state: location.pathname });
+        } else if (order?.orderItems?.length > 0) {
+            const itemOrder = order?.orderItems?.find((item) => item?.product === idProduct);
+            if (itemOrder.amount + count > product?.countInStock) {
+                toast.warn("Số lượng sản phẩm không đủ");
+            } else {
+                dispatch(addOrderProduct({
+                    name: product?.name,
+                    amount: count,
+                    image: product?.image,
+                    price: product?.price,
+                    product: idProduct
+                }))
+            }
         } else {
             dispatch(addOrderProduct({
                 name: product?.name,
@@ -57,27 +73,29 @@ const ProductDetailsComponent = (props) => {
         }
     }, [idProduct]);
 
+    useEffect(() => {
+        initFacebookSdk();
+    }, []);
+
     return (
         <div className="p-4 mx-32">
             <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-1 bg-white rounded-md gap-10">
                 <div className="m-6 col-span-1">
                     <img src={product?.image} alt="" className="object-cover rounded-md" />
-
                 </div>
                 <div className="m-6 col-span-2">
-                    <h1 className="text-2xl subpixel-antialiased">{product?.name}</h1>
-                    <p className="mt-2 text-gray-500 capitalize">{product?.description}</p>
+                    <h1 className="text-3xl font-bold subpixel-antialiased text-rose-700">{product?.name}</h1>
+                    <p className="my-2 font-normal">Tình trạng: <span className="font-bold subpixel-antialiased text-rose-700">{product?.countInStock > 0 ? "Còn hàng" : "Hết hàng"}</span></p>
                     <div className="flex mt-2 items-center">
-                        <p className="font-medium">{product.rating}</p>
+                        <p className="font-medium">Đánh giá: <span className="text-slate-500">{product?.rating}</span></p>
                         <MdStarRate className="h-7 text-yellow-500" />
-                        <MdStarRate className="h-7 text-yellow-500" />
-                        <MdStarRate className="h-7 text-yellow-500" />
-                        <MdStarRate className="h-7 text-yellow-500" />
-                        <MdStarRate className="h-7 text-yellow-500" />
-                        <p className="ml-2 text-slate-500">| Đã bán 6</p>
+                        <p className="ml-2 text-slate-500">| Đã bán {product?.selled || 100}+</p>
                     </div>
-                    <p className="text-3xl text-red-500 font-medium mt-2">
-                        {product?.price ? `${formatPrice(product?.price)} đ` : "0 đ"}
+                    <LikeButtonComponent
+                        dataHref={process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/" : window.location.href}
+                    />
+                    <p className="font-medium mt-2">
+                        Giá: <span className="ml-2 text-3xl text-red-500 font-medium">{product?.price ? `${formatPrice(product?.price)} đ` : "0 đ"}</span>
                     </p>
                     {user?.id && <p className="mt-5">Giao hàng đến: <span className="text-blue-500 hover:underline cursor-pointer">{user?.address}</span></p>}
                     <div className="mt-4">
@@ -109,9 +127,16 @@ const ProductDetailsComponent = (props) => {
                             <button className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md ml-2">Mua ngay</button>
                         </div>
                     </div>
+                    <div>
+                        <h1 className="text-xl font-bold mt-5 text-rose-800">Mô tả sản phẩm</h1>
+                        <p className="mt-2 text-gray-500 capitalize">{product?.description}</p>
+                    </div>
                 </div>
                 <ToastContainer />
             </div>
+            <CommentComponent
+                dataHref={process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/comments#configurator" : window.location.href}
+            />
         </div>
     );
 };

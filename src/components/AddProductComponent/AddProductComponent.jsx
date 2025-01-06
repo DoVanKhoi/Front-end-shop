@@ -73,6 +73,7 @@ const AddProductComponent = (props) => {
             description: ''
         });
         setPreviewImage(null);
+        setNewType('');
         hideModalCreate();
     };
 
@@ -140,10 +141,11 @@ const AddProductComponent = (props) => {
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                             >
                                 <option value="">-- Chọn loại --</option>
-                                <option value="Đồ gia dụng nhà bếp">Đồ gia dụng nhà bếp</option>
-                                <option value="Đồ gia dụng nhà tắm">Đồ gia dụng nhà tắm</option>
-                                <option value="Đồ gia dụng phòng khách">Đồ gia dụng phòng khách</option>
-                                <option value="Đồ gia dụng phòng ngủ">Đồ gia dụng phòng ngủ</option>
+                                <option value="Phòng ăn và bếp">Phòng ăn và bếp</option>
+                                <option value="Phòng tắm">Phòng tắm</option>
+                                <option value="Phòng khách">Phòng khách</option>
+                                <option value="Phòng ngủ">Phòng ngủ</option>
+                                <option value="Phòng làm việc">Phòng làm việc</option>
                                 <option value="add_type">Thêm loại</option>
                             </select>
                         </div>

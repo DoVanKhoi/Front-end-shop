@@ -59,7 +59,7 @@ const HeaderComponent = () => {
                     <h1
                         className="lg:text-[30px] md:text-[20px] sm:text-[10px] uppercase font-bold text-blue-600 cursor-pointer"
                         onClick={() => handleLogo()}
-                    >Đồ Gia Dụng</h1>
+                    >Đồ Nội Thất</h1>
                 </div>
                 <div className="flex items-center lg:space-x-4 md:space-x-2 sm:space-x-1">
                     <div id="search-product" className="flex items-center">
