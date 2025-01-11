@@ -37,6 +37,7 @@ function App() {
     const { decoded } = handleDecoded();
     if (decoded?.exp < currentTime) {
       const data = await UserService.refresh_token();
+      console.log(data);
       localStorage.setItem('access_token', JSON.stringify(data?.access_token));
       config.headers['token'] = `Bearer ${data?.access_token}`;
     }

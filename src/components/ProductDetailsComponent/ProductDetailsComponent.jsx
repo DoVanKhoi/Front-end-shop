@@ -53,6 +53,7 @@ const ProductDetailsComponent = (props) => {
                     price: product?.price,
                     product: idProduct
                 }))
+                toast.success("Thêm sản phẩm vào giỏ hàng thành công");
             }
         } else {
             dispatch(addOrderProduct({
@@ -62,6 +63,7 @@ const ProductDetailsComponent = (props) => {
                 price: product?.price,
                 product: idProduct
             }))
+            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
         }
     }
 
@@ -124,12 +126,20 @@ const ProductDetailsComponent = (props) => {
                         </div>
                         <div>
                             <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md" onClick={() => handleAddOrderProduct()}>Thêm vào giỏ hàng</button>
-                            <button className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md ml-2">Mua ngay</button>
+                            {/* <button className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md ml-2">Mua ngay</button> */}
                         </div>
                     </div>
                     <div>
                         <h1 className="text-xl font-bold mt-5 text-rose-800">Mô tả sản phẩm</h1>
-                        <p className="mt-2 text-gray-500 capitalize">{product?.description}</p>
+                        <p className="mt-2 text-gray-500 capitalize">
+                            {product?.description?.split('.').map((sentence, index) => (
+                                <span key={index}>
+                                    {sentence.trim()}
+                                    {sentence.trim() && '.'}
+                                    <br />
+                                </span>
+                            ))}
+                        </p>
                     </div>
                 </div>
                 <ToastContainer />

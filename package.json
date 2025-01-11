@@ -54,5 +54,5 @@
   "devDependencies": {
     "tailwindcss": "^3.4.15"
   },
-  "proxy": "http://localhost:8888"
+  "proxy": "https://humbly-renewed-monkfish.ngrok-free.app"
 }

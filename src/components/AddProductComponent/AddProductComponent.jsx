@@ -102,7 +102,7 @@ const AddProductComponent = (props) => {
             <div className="relative p-4 bg-white rounded-lg shadow">
                 {/* <!-- Modal header --> */}
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5">
-                    <h3 className="text-lg font-semibold text-gray-900">Add Product</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Thêm sản phẩm</h3>
                     <button
                         type="button"
                         onClick={() => handleHideModalCreate()}
@@ -111,14 +111,14 @@ const AddProductComponent = (props) => {
                         <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
-                        <span className="sr-only">Close modal</span>
+                        <span className="sr-only">Đóng</span>
                     </button>
                 </div>
                 {/* <!-- Modal body --> */}
                 <form id="modal-add-product" action="#">
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>
+                            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Tên sản phẩm</label>
                             <input
                                 id="name"
                                 type="text"
@@ -132,7 +132,7 @@ const AddProductComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="type" className="block mb-2 text-sm font-medium text-gray-900">Type</label>
+                            <label htmlFor="type" className="block mb-2 text-sm font-medium text-gray-900">Loại</label>
                             <select
                                 id="type"
                                 name="type"
@@ -151,7 +151,7 @@ const AddProductComponent = (props) => {
                         </div>
                         {stateProduct.type === 'add_type' && (
                             <div className="grid-cols-subgrid col-span-2">
-                                <label htmlFor="newType" className="block mb-2 text-sm font-medium text-gray-900">New type</label>
+                                <label htmlFor="newType" className="block mb-2 text-sm font-medium text-gray-900">Thêm loại</label>
                                 <input
                                     id="newType"
                                     type="text"
@@ -166,7 +166,7 @@ const AddProductComponent = (props) => {
                             </div>
                         )}
                         <div>
-                            <label htmlFor="countInStock" className="block mb-2 text-sm font-medium text-gray-900">Count in stock</label>
+                            <label htmlFor="countInStock" className="block mb-2 text-sm font-medium text-gray-900">Số lượng trong kho</label>
                             <input
                                 id="countInStock"
                                 type="number"
@@ -180,7 +180,7 @@ const AddProductComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">Price</label>
+                            <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">Giá</label>
                             <input
                                 id="price"
                                 type="text"
@@ -194,7 +194,7 @@ const AddProductComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="rating" className="block mb-2 text-sm font-medium text-gray-900">Rating</label>
+                            <label htmlFor="rating" className="block mb-2 text-sm font-medium text-gray-900">Đánh giá</label>
                             <input
                                 id="rating"
                                 type="number"
@@ -208,7 +208,7 @@ const AddProductComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900">Mô tả</label>
                             <input
                                 id="description"
                                 type="text"
@@ -223,7 +223,7 @@ const AddProductComponent = (props) => {
                         </div>
                         <div className="flex items-center gap-4">
                             <div>
-                                <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+                                <label htmlFor="image" className="block text-sm font-medium text-gray-700">Hình ảnh</label>
                                 <input
                                     type="file"
                                     id="image"
@@ -239,7 +239,7 @@ const AddProductComponent = (props) => {
                         <svg className="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                         </svg>
-                        Add new product
+                        Thêm sản phẩm
                     </button>
                     {isValid && <p className="text-red-500 text-sm/6">Vui lòng điền đầy đủ thông tin</p>}
                 </form>

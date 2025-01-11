@@ -3,6 +3,7 @@ import { useMutationHook } from "../../hooks/useMutationHook";
 import * as UserService from "../../services/UserService";
 import { getBase64 } from "../../utils";
 import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 
 const UpdateUserComponent = (props) => {
     const { hideModalEdit, editId, refetchData } = props;
@@ -71,6 +72,7 @@ const UpdateUserComponent = (props) => {
             setIsValid(false);
             mutation.mutate({ editId, stateUser, access_token: user?.access_token });
             hideModalEdit();
+            toast.success('Cập nhật người dùng thành công');
             refetchData();
         }
     }
@@ -204,6 +206,7 @@ const UpdateUserComponent = (props) => {
                     </button>
                     {isValid && <p className="text-red-500 text-sm/6">Vui lòng điền đầy đủ</p>}
                 </form>
+                <ToastContainer />
             </div>
         </>
     );

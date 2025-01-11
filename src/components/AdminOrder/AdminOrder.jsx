@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from "react";
-import * as UserService from "../../services/UserService";
+import * as OrderService from "../../services/OrderService";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import UpdateUserComponent from "../UpdateUserComponent/UpdateUserComponent";
+import { formatPrice } from "../../utils";
+import { useMutationHook } from "../../hooks/useMutationHook";
 
-const AdminUser = () => {
+const AdminOrder = () => {
     const user = useSelector((state) => state.user);
-    const [users, setUsers] = useState([]);
+    const [orders, setOrders] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredUsers, setFilteredUsers] = useState([]);
-    const [editId, setEditId] = useState('');
-    const [deleteId, setDeleteId] = useState('');
-    const [isShowModalEdit, setIsShowModalEdit] = useState(false);
-    const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+    const [selectedMonth, setSelectedMonth] = useState("");
+    const [filteredOrders, setFilteredOrders] = useState([]);
+    const [idUpdate, setIdUpdate] = useState("");
+    const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
 
-    const fetchUserAll = async (access_token) => {
-        const res = await UserService.getAllUser(access_token);
+    const fetchOrderAll = async (access_token) => {
+        const res = await OrderService.getAllOrder(access_token);
         return res.data;
     }
 
-    const queryAllUser = useQuery({ queryKey: ['users'], queryFn: () => fetchUserAll(user?.access_token) });
-    const { data, refetch } = queryAllUser;
+    const queryAllOrder = useQuery({ queryKey: ['orders'], queryFn: () => fetchOrderAll(user?.access_token) });
+    const { data, refetch } = queryAllOrder;
+
+    const mutation = useMutationHook(
+        async (id) => {
+            const res = await OrderService.updateOrder(id);
+            return res;
+        }
+    )
 
     useEffect(() => {
         if (data) {
-            setUsers(data);
+            setOrders(data);
         }
     }, [data]);
 
@@ -32,68 +39,52 @@ const AdminUser = () => {
         setSearchTerm(e.target.value);
     }
 
+    const handleMonthChange = (e) => {
+        setSelectedMonth(e.target.value);
+    };
+
+    const handleUpdateOrder = (e) => {
+        setIdUpdate(e.target.id);
+        setIsShowModalConfirm(true);
+    }
+
+    const hideModalConfirm = () => {
+        setIsShowModalConfirm(false);
+    }
+
+    const handleConfirmUpdate = async (e) => {
+        e.preventDefault();
+        mutation.mutate(idUpdate, {
+            onSettled: () => {
+                refetch();
+            }
+        });
+        hideModalConfirm();
+    }
+
     useEffect(() => {
-        const filteredUsers = () => {
-            return users.filter((user) => {
-                return (
-                    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    user.phone.toString().includes(searchTerm) ||
-                    user.city.toLowerCase().includes(searchTerm.toLowerCase())
-                );
+        const filteredOrders = () => {
+            return orders.filter((order) => {
+                const matchesSearch = order?.shippingAddress?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesMonth = selectedMonth ? new Date(order?.createdAt).getMonth() + 1 === parseInt(selectedMonth) : true;
+                return matchesSearch && matchesMonth;
             });
+
         };
-        setFilteredUsers(filteredUsers());
-    }, [users, searchTerm]);
-
-    const showModalEdit = (e) => {
-        setIsShowModalEdit(true);
-        setEditId(e.target.id);
-    }
-
-    const hideModalEdit = () => {
-        setIsShowModalEdit(false);
-        setEditId('');
-        refetch();
-    }
-
-    const showModalDelete = (e) => {
-        setDeleteId(e.target.id);
-        setIsShowModalDelete(true);
-    }
-
-    const hideModalDelete = () => {
-        setIsShowModalDelete(false);
-    }
-
-    const handleDeleteUser = async (e) => {
-        if (e.target.id === user?.id) {
-            alert("Không thể xóa tài khoản của chính mình");
-        } else {
-            await UserService.deleteUser(e.target.id, user?.access_token);
-        }
-        hideModalDelete();
-        refetch();
-    }
+        setFilteredOrders(filteredOrders());
+    }, [orders, searchTerm, selectedMonth]);
 
     useEffect(() => {
-        if (isShowModalEdit) {
-            document.getElementById('updateUserModal').classList.remove('hidden');
+        if (isShowModalConfirm) {
+            document.getElementById('confirmUpdateModal').classList.remove('hidden');
         } else {
-            document.getElementById('updateUserModal').classList.add('hidden');
+            document.getElementById('confirmUpdateModal').classList.add('hidden');
         }
-    }, [isShowModalEdit]);
-
-    useEffect(() => {
-        if (isShowModalDelete) {
-            document.getElementById('deleteUserModal').classList.remove('hidden');
-        } else {
-            document.getElementById('deleteUserModal').classList.add('hidden');
-        }
-    }, [isShowModalDelete]);
+    }, [isShowModalConfirm]);
 
     return (
         <div className="p-4">
-            <h1 className="text-center text-4xl font-semibold">Quản lý người dùng</h1>
+            <h1 className="text-center text-4xl font-semibold">Quản lý đơn hàng</h1>
             <div className="mt-10 mx-4 h-fit">
                 <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div className="w-full md:w-1/2">
@@ -117,6 +108,20 @@ const AdminUser = () => {
                             </div>
                         </form>
                     </div>
+                    <div className="w-full md:w-1/4">
+                        <select
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2"
+                            value={selectedMonth}
+                            onChange={(e) => handleMonthChange(e)}
+                        >
+                            <option value="">Tất cả các tháng</option>
+                            {[...Array(12).keys()].map(month => (
+                                <option key={month + 1} value={month + 1}>
+                                    Tháng {month + 1}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* <!-- Table --> */}
@@ -125,83 +130,75 @@ const AdminUser = () => {
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Tên
+                                    Tên khách hàng
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Email
+                                    Sản phẩm đã mua
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Số điện thoại
+                                    Tổng tiền
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Địa chỉ
+                                    Hình thức thanh toán
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Tỉnh/Thành phố
+                                    Đã thanh toán
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Xử lý
+                                    Trạng thái đơn hàng
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredUsers.map((user) => (
-                                <tr key={user?._id} className="odd:bg-white even:bg-gray-50 border-b">
+                            {filteredOrders.map((order) => (
+                                <tr key={order?._id} className="odd:bg-white even:bg-gray-50 border-b">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                        {user?.name}
+                                        {order?.shippingAddress?.name}
                                     </th>
                                     <td className="px-6 py-4">
-                                        {user?.email}
+                                        {order?.orderItems?.map((item) => (
+                                            <div key={item?._id} className="flex flex-col">
+                                                <p className="ml-2">{item?.name}</p>
+                                            </div>
+                                        ))}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {user?.phone}
+                                        {formatPrice(order?.totalPrice)}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {user?.address}
+                                        {order?.paymentMethod === 'Thanh toán online bằng thẻ tín dụng' ? 'Paypal' : 'Tiền mặt'}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {user?.city}
+                                        {order?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                                     </td>
                                     <td className="flex items-center px-6 py-4">
-                                        <button
-                                            id={user?._id}
-                                            onClick={(e) => showModalEdit(e)}
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            Sửa
-                                        </button>
-                                        <button
-                                            id={user?._id}
-                                            onClick={(e) => showModalDelete(e)}
-                                            className="text-red-600 hover:underline ms-3"
-                                        >
-                                            Xóa
-                                        </button>
+                                        {order?.isDelivered ? 'Đã giao hàng' : 'Chưa giao hàng'}
+                                        {order?.isDelivered ? '✓' : (
+                                            <button
+                                                id={order?._id}
+                                                className="ml-4 bg-primary-500 text-white px-4 py-2 rounded-lg"
+                                                onClick={(e) => handleUpdateOrder(e)}
+                                            >
+                                                Xác nhận giao hàng
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-
-
-            </div>
-            {/* Modal update user */}
-            <div id="updateUserModal" tabIndex="-1" className="hidden overflow-y-auto overflow-x-hidden bg-gray-900 bg-opacity-50 fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full h-screen">
-                <div className="relative left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-4 max-w-2xl">
-                    <UpdateUserComponent hideModalEdit={hideModalEdit} refetchData={refetch} editId={editId} />
-                </div>
             </div>
 
-            {/* Modal delete user */}
-            <div id="deleteUserModal" tabIndex="-1" className="hidden overflow-y-auto overflow-x-hidden bg-gray-900 bg-opacity-50 fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full h-screen">
+            {/* Modal confirm order */}
+            <div id="confirmUpdateModal" tabIndex="-1" className="hidden overflow-y-auto overflow-x-hidden bg-gray-900 bg-opacity-50 fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full h-screen">
                 <div className="relative left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-4 max-w-2xl">
                     <div className="relative p-4 bg-white rounded-lg shadow">
                         <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5">
-                            <h3 className="text-lg font-semibold text-gray-900">Xóa người dùng</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Xác nhận giao hàng</h3>
                             <button
                                 type="button"
-                                onClick={() => hideModalDelete()}
+                                onClick={() => hideModalConfirm()}
                                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                             >
                                 <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -211,19 +208,19 @@ const AdminUser = () => {
                             </button>
                         </div>
                         <div>
-                            <p className="text-gray-700 text-sm">Bạn có chắc là muốn xóa người dùng này không?</p>
+                            <p className="text-gray-700 text-sm">Bạn có chắc là đơn hàng này đã thanh toán và được giao không?</p>
                             <div className="mt-4 flex justify-end space-x-3">
                                 <button
                                     type="button"
-                                    id={deleteId}
-                                    onClick={(e) => handleDeleteUser(e)}
-                                    className="text-white bg-red-600 hover:bg-red-700 rounded-lg text-sm p-1.5"
+                                    id={idUpdate}
+                                    onClick={(e) => handleConfirmUpdate(e)}
+                                    className="text-white bg-primary-700 hover:bg-primary-800 rounded-lg text-sm p-1.5"
                                 >
-                                    Xóa
+                                    Xác nhận
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => hideModalDelete()}
+                                    onClick={() => hideModalConfirm()}
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5"
                                 >
                                     Hủy
@@ -237,4 +234,4 @@ const AdminUser = () => {
     );
 };
 
-export default AdminUser;
+export default AdminOrder;

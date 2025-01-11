@@ -3,12 +3,10 @@ import * as ProductService from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import AddProductComponent from "../AddProductComponent/AddProductComponent";
 import UpdateProductComponent from "../UpdateProductComponent/UpdateProductComponent";
-import { useSelector } from "react-redux";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import { formatPrice } from "../../utils";
 
 const AdminProduct = () => {
-    const user = useSelector((state) => state.user);
     const [products, setProducts] = useState([]);
     const [editId, setEditId] = useState('');
     const [deleteId, setDeleteId] = useState('');
@@ -50,9 +48,8 @@ const AdminProduct = () => {
     }, [products, searchTerm, selectedTypes]);
 
     const mutation = useMutationHook(
-        async (data) => {
-            const { deleteId, access_token } = data;
-            const res = await ProductService.deleteProduct(deleteId, access_token);
+        async (deleteId) => {
+            const res = await ProductService.deleteProduct(deleteId);
             return res;
         }
     )
@@ -94,7 +91,7 @@ const AdminProduct = () => {
 
     const handleDeleteProduct = (e) => {
         e.preventDefault();
-        mutation.mutate({ deleteId, access_token: user?.access_token }, {
+        mutation.mutate(deleteId, {
             onSettled: () => {
                 refetch();
             }
@@ -370,14 +367,14 @@ const AdminProduct = () => {
                                     onClick={(e) => handleDeleteProduct(e)}
                                     className="text-white bg-red-600 hover:bg-red-700 rounded-lg text-sm p-1.5"
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => hideModalDelete()}
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5"
                                 >
-                                    Cancel
+                                    Hủy
                                 </button>
                             </div>
                         </div>

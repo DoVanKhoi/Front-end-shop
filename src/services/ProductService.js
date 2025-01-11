@@ -1,24 +1,22 @@
-import axios from "axios";
-
-export const axiosJWT = axios.create();
+import { instance } from "../utils/axios";
 
 export const getAllProduct = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-all`);
+    const res = await instance.get(`/product/get-all`);
     return res.data;
 };
 
 export const getProductById = async (id) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/details/${id}`);
+    const res = await instance.get(`/product/details/${id}`);
     return res.data;
 }
 
 export const createProduct = async (data) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/create`, data);
+    const res = await instance.post(`/product/create`, data);
     return res.data;
 };
 
 export const updateProduct = async (id, data, access_token) => {
-    const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/product/update/${id}`, data, {
+    const res = await instance.put(`/product/update/${id}`, data, {
         headers: {
             token: `Bearer ${access_token}`
         }
@@ -26,16 +24,7 @@ export const updateProduct = async (id, data, access_token) => {
     return res.data;
 };
 
-export const deleteProduct = async (id, access_token) => {
-    const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/product/delete/${id}`, {
-        headers: {
-            token: `Bearer ${access_token}`
-        }
-    });
-    return res.data;
-}
-
-export const filterProduct = async (searchValue) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-all?filter=${searchValue}`);
+export const deleteProduct = async (id) => {
+    const res = await instance.delete(`/product/delete/${id}`);
     return res.data;
 };

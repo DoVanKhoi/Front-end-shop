@@ -40,6 +40,7 @@ const HeaderComponent = () => {
     const handleLogout = async () => {
         await UserService.logoutUser();
         localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         dispatch(resetUser());
     }
 
@@ -130,7 +131,7 @@ const HeaderComponent = () => {
                                                         className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                                                         onClick={() => navigate('/my-order')}
                                                     >
-                                                        Đơn hàng
+                                                        Lịch sử mua hàng
                                                     </button>
                                                 </MenuItem>
                                             )}
