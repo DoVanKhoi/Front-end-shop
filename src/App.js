@@ -16,15 +16,15 @@ function App() {
 
   useEffect(() => {
     const { decoded, storageData } = handleDecoded();
-    if (decoded && storageData) {
+    if (decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
   }, [])
 
   const handleDecoded = () => {
-    let storageData = localStorage.getItem('access_token');
+    let storageData = user?.access_token || localStorage.getItem('access_token');
     let decoded = {};
-    if (storageData && isJsonString(storageData)) {
+    if (storageData && isJsonString(storageData) && user?.access_token) {
       storageData = JSON.parse(storageData);
       decoded = jwtDecode(storageData);
     }
