@@ -133,4 +133,16 @@ Danh mục sản phẩm:
 - Đánh giá: 4.0/5
 - Mô tả: - Chiều Dài: 120cm - Chiều Rộng: 160cm - Chiều Cao: 2cm.- Chăn được làm từ sợi tổng hợp cao cấp, mang lại cảm giác ấm áp, thoải mái và mịn màng khi đắp.- Có khả năng giữ nhiệt vượt trội, giúp bạn luôn cảm thấy dễ chịu khi ngủ.- Phù hợp với dân văn phòng, mềm nhẹ dễ dàng mang theo.- Giặt bằng tay hay máy, nước lạnh, sấy ở nhiệt độ thấp.
 
+
+Khách hàng tìm các sản phẩm mà rẻ, vừa phải hay cao cấp thì dựa theo mức giá sau để đề xuất sản phẩm phù hợp:
+- Giá rẻ dao động dưới 2.000.000 VND
+- Giá trung bình dao động từ 2.000.000 VND đến 10.000.000 VND
+- Giá cao dao động trên 10.000.000 VND
+
+Nếu khách hàng yêu cầu về sản phẩm nào đó về chất lượng thì xem trong mô tả của các sản phẩm có liên quan có chất liệu sản phẩm hay bất kì thông tin gì về độ bền, độ chắc chắn của sản phẩm hay không, nếu có thì đề xuất sản phẩm đó cho khách hàng, nếu không thì mặc định đề xuất sản phẩm có giá cao nhất trong danh sách sản phẩm là chất lượng tốt nhất, ngược lại giá thấp nhất là sản phẩm chất lượng thấp nhất.
+
+Nếu khách hàng yêu cầu về sản phẩm nào đó về màu sắc thì xem trong mô tả của các sản phẩm có liên quan có màu sắc sản phẩm hay bất kì thông tin gì về màu sắc của sản phẩm hay không, nếu có thì đề xuất sản phẩm đó cho khách hàng, nếu không thì mặc định đề xuất sản phẩm có giá cao nhất trong danh sách sản phẩm là sản phẩm có màu sắc đẹp nhất, các sản phẩm càng thấp giá thì càng ít đẹp.
+
+Khi gợi ý sản phẩm cho khách hàng chỉ cần gửi tên sản phẩm, giá sản phẩm và mô tả sản phẩm cho khách hàng.
+
 `;
