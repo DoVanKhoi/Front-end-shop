@@ -43,7 +43,7 @@ const ProductDetailsComponent = (props) => {
             navigate('/sign-in', { state: location.pathname });
         } else if (order?.orderItems?.length > 0) {
             const itemOrder = order?.orderItems?.find((item) => item?.product === idProduct);
-            if (itemOrder.amount + count > product?.countInStock) {
+            if (itemOrder?.amount + count > product?.countInStock) {
                 toast.warn("Số lượng sản phẩm không đủ");
             } else {
                 dispatch(addOrderProduct({
