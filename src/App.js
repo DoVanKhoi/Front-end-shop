@@ -6,7 +6,7 @@ import { isJsonString } from './utils';
 import { jwtDecode } from 'jwt-decode';
 import * as UserService from "./services/UserService";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUser } from './redux/slides/userSlide';
+import { resetUser, updateUser } from './redux/slides/userSlide';
 
 
 function App() {
@@ -35,10 +35,17 @@ function App() {
     // Do something before request is sent
     const currentTime = new Date().getTime() / 1000;
     const { decoded } = handleDecoded();
+    let storageRefreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = JSON.parse(storageRefreshToken);
+    const decodedRefreshToken = jwtDecode(refreshToken);
     if (decoded?.exp < currentTime) {
-      const data = await UserService.refresh_token(storageData?.refresh_token);
-      localStorage.setItem('access_token', JSON.stringify(data?.access_token));
-      config.headers['token'] = `Bearer ${data?.access_token}`;
+      if (decodedRefreshToken?.exp > currentTime) {
+        const data = await UserService.refresh_token(refreshToken);
+        localStorage.setItem('access_token', JSON.stringify(data?.access_token));
+        config.headers['token'] = `Bearer ${data?.access_token}`;
+      } else {
+        dispatch(resetUser());
+      }
     }
 
     return config;
