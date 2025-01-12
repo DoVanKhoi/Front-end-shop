@@ -17,7 +17,7 @@ const ChatForm = (props) => {
 
             setChatHistory((history) => [...history, { role: "model", text: "Thinking..." }]);
 
-            generateBotResponse([...chatHistory, { role: "user", text: `Using the details provided above, please address this query: ${userMessage}` }]);
+            generateBotResponse([...chatHistory, { role: "user", text: `Sử dụng các chi tiết được cung cấp ở trên, vui lòng giải quyết truy vấn này: ${userMessage}` }]);
         }, 600);
 
     }

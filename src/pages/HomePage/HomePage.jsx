@@ -159,7 +159,7 @@ const HomePage = () => {
                     <div className="message bot-message flex gap-3">
                         <TbMessageChatbot className="size-9 p-1 mb-1 bg-violet-400 rounded-full fill-white flex-shrink-0 self-end" />
                         <p className="message-text py-3 px-4 max-w-[75%] whitespace-pre-line text-base bg-white rounded-t-xl rounded-br-xl rounded-bl-sm">
-                            Hey there <br /> How can I help you today?
+                            Xin chào <br /> Tôi có thể giúp gì cho bạn hôm nay?
                         </p>
                     </div>
 

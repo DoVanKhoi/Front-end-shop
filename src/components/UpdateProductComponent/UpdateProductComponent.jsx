@@ -137,17 +137,21 @@ const UpdateProductComponent = (props) => {
                         </div>
                         <div>
                             <label htmlFor="type" className="block mb-2 text-sm font-medium text-gray-900">Loại</label>
-                            <input
+                            <select
                                 id="type"
-                                type="text"
                                 name="type"
                                 value={stateProduct.type}
                                 onChange={(e) => handleChangeType(e)}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                placeholder="Product type"
-                                autoComplete="off"
-                                required
-                            />
+                            >
+                                <option value="">-- Chọn loại --</option>
+                                <option value="Phòng ăn và bếp">Phòng ăn và bếp</option>
+                                <option value="Phòng tắm">Phòng tắm</option>
+                                <option value="Phòng khách">Phòng khách</option>
+                                <option value="Phòng ngủ">Phòng ngủ</option>
+                                <option value="Phòng làm việc">Phòng làm việc</option>
+                                <option value="add_type">Thêm loại</option>
+                            </select>
                         </div>
                         <div>
                             <label htmlFor="countInStock" className="block mb-2 text-sm font-medium text-gray-900">Số lượng</label>
