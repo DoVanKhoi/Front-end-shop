@@ -16,15 +16,15 @@ function App() {
 
   useEffect(() => {
     const { decoded, storageData } = handleDecoded();
-    if (decoded?.id) {
+    if (decoded && storageData) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
   }, [])
 
   const handleDecoded = () => {
-    let storageData = user?.access_token || localStorage.getItem('access_token');
+    let storageData = localStorage.getItem('access_token');
     let decoded = {};
-    if (storageData && isJsonString(storageData) && user?.access_token) {
+    if (storageData && isJsonString(storageData)) {
       storageData = JSON.parse(storageData);
       decoded = jwtDecode(storageData);
     }
@@ -35,14 +35,18 @@ function App() {
     // Do something before request is sent
     const currentTime = new Date().getTime() / 1000;
     const { decoded } = handleDecoded();
-    let storageRefreshToken = localStorage.getItem('refresh_token');
-    const refreshToken = JSON.parse(storageRefreshToken);
-    const decodedRefreshToken = jwtDecode(refreshToken);
+    const storageRefreshToken = localStorage.getItem('refresh_token');
+    const refresh_token = JSON.parse(storageRefreshToken);
+    const decodedRefreshToken = jwtDecode(refresh_token);
     if (decoded?.exp < currentTime) {
       if (decodedRefreshToken?.exp > currentTime) {
-        const data = await UserService.refresh_token(refreshToken);
+        const data = await UserService.refresh_token(refresh_token);
+        localStorage.setItem('access_token', JSON.stringify(data?.access_token));
         config.headers['token'] = `Bearer ${data?.access_token}`;
+        dispatch(updateUser({ ...user, access_token: data?.access_token }));
       } else {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         dispatch(resetUser());
       }
     }
@@ -53,10 +57,10 @@ function App() {
   });
 
   const handleGetDetailsUser = async (id, token) => {
-    let storageRefreshToken = localStorage.getItem('refresh_token');
-    const refreshToken = JSON.parse(storageRefreshToken);
+    const storageRefreshToken = localStorage.getItem('refresh_token');
+    const refresh_token = JSON.parse(storageRefreshToken);
     const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, access_token: token, refresh_token: refreshToken }));
+    dispatch(updateUser({ ...res?.data, access_token: token, refresh_token }));
   }
 
   return (

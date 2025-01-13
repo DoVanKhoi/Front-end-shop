@@ -38,7 +38,7 @@ export const getDetailsUser = async (id, access_token) => {
 };
 
 export const refresh_token = async (refresh_token) => {
-    const res = await instance.post(`/user/refresh-token`, {
+    const res = await instance.post(`/user/refresh-token`, {}, {
         headers: {
             token: `Bearer ${refresh_token}`
         }
